@@ -10,6 +10,8 @@
 
 > **Distributed ESP32 ambient Wi-Fi sensing platform for human presence and movement estimation with real-time 3D visualization.**
 
+![NEXUS-PRESENCE Project Overview](docs/architecture/repository-overview.png)
+
 **Lead Developer & Architect:** [Uday Kiran Jammula](https://github.com/Udaykiranjammula-alpha)  
 **Target Repository:** `https://github.com/Udaykiranjammula-alpha/NEXUS-PRESENCE`
 
@@ -222,17 +224,19 @@ The frontend renders a dark, scientific mission-control dashboard powered by Thr
 
 ## 9. Screenshot & Evidence Gallery
 
-The working hardware prototypes and system components are documented below:
+The physical hardware prototypes, serial telemetry feeds, and 3D mission control interfaces are documented below:
 
-| Verified Master SoftAP | Verified Sensor RSSI Stream | Verified RSSI v2 Baseline |
-| :---: | :---: | :---: |
-| ![Master AP](docs/screenshots/esp32-master-ap.png) | ![Sensor RSSI](docs/screenshots/esp32-sensor-rssi.png) | ![Baseline](docs/screenshots/rssi-baseline.png) |
-| *ESP32 #1 starting SoftAP `NEXUS_PRESENCE` at 192.168.4.1* | *ESP32 #2 connecting and logging raw RSSI at -30 dBm* | *10s baseline calibration and 4-state activity detector* |
-
-| Backend Streaming Pipeline | 3D Mission Control Viewport |
+### 9.1 Physical ESP32 Hardware & Serial Telemetry
+| ESP32 #1 Master Node (SoftAP Gateway) | ESP32 #2 Sensor Node (RSSI & Activity Classifier) |
 | :---: | :---: |
-| ![Backend Live](docs/screenshots/backend-live.png) | ![3D View](docs/screenshots/3d-visualization.png) |
-| *FastAPI server running UDP receiver & 20 Hz broadcaster* | *Three.js 3D virtual room, node meshes, avatar & HUD* |
+| ![Master AP](docs/screenshots/esp32-master-ap.png) | ![Sensor RSSI](docs/screenshots/esp32-sensor-rssi.png) |
+| *Verified Hardware Prototype: ESP32 #1 SoftAP `NEXUS_PRESENCE` (192.168.4.1), 3 stations connected* | *Verified Hardware Prototype: ESP32 #2 station telemetry, 10s baseline (-32.4 dBm) & activity detector* |
+
+### 9.2 Master Physical Architecture & 3D Mission Control
+| Master System Architecture & Spatial Deployment | 3D Mission Control & Person Tracking HUD |
+| :---: | :---: |
+| ![System Architecture](docs/architecture/system-architecture.png) | ![3D View](docs/screenshots/3d-visualization.png) |
+| *End-to-End System Pipeline: 4-Node Anchor Geometry, Tripod Deployment, & Nexus Server* | *Three.js 3D Virtual Room: Person Tracking (2.41m, 1.72m, 0.84 m/s, 87% Confidence) & Live Graphs* |
 
 ---
 
