@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  nexus-backend:
+    build:
+      context: ..
+      dockerfile: deployment/Dockerfile
+    container_name: nexus-presence-backend
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+      - "5005:5005/udp"
+    environment:
+      - PROJECT_NAME=NEXUS-PRESENCE
+      - BACKEND_HOST=0.0.0.0
+      - BACKEND_PORT=8000
+      - UDP_PORT=5005
+    volumes:
+      - ../data:/app/data
+
+  nexus-frontend-proxy:
+    image: nginx:alpine
+    container_name: nexus-presence-proxy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ../frontend:/usr/share/nginx/html/frontend:ro
+      - ../visualization:/usr/share/nginx/html/visualization:ro
+    depends_on:
+      - nexus-backend
