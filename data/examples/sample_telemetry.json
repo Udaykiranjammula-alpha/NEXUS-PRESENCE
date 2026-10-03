@@ -1,0 +1,16 @@
+{
+  "protocol_version": 1,
+  "node_id": 2,
+  "role": "SENSOR_NODE_A",
+  "timestamp": 1720000000,
+  "rssi": -48,
+  "channel": 6,
+  "packet_count": 128,
+  "motion_score": 0.73,
+  "average_rssi": -48.2,
+  "baseline_rssi": -42.0,
+  "deviation": 6.2,
+  "variance": 2.45,
+  "status": "MOVEMENT",
+  "sensing_mode": "RSSI_ONLY"
+}
