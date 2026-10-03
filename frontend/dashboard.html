@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEXUS-PRESENCE | Live Sensor Network & 3D Mission Control</title>
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/3d-room.css">
+
+    <!-- Three.js and OrbitControls from CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+</head>
+<body class="dashboard-root">
+
+    <!-- Top Header -->
+    <header class="dashboard-header">
+        <div class="brand-section">
+            <div class="brand-title">
+                NEXUS<span>-PRESENCE</span>
+            </div>
+            <span class="badge mono" style="color: var(--text-dim);">LIVE SENSOR NETWORK</span>
+        </div>
+
+        <div class="status-section">
+            <span id="sim-mode-badge" class="badge badge-sim mono" style="display: none;">
+                &#9888; DEMO / SIMULATION MODE
+            </span>
+            <span id="sensing-mode-badge" class="badge badge-csi mono">
+                SENSING: RSSI ONLY
+            </span>
+            <span id="system-status-badge" class="badge badge-online mono">
+                <span class="pulse-dot"></span> SYSTEM ONLINE
+            </span>
+            <a href="index.html" class="btn btn-secondary mono" style="padding: 0.35rem 0.75rem; font-size: 0.75rem;">
+                OVERVIEW
+            </a>
+        </div>
+    </header>
+
+    <!-- 4 Node Telemetry Summary Bar -->
+    <section class="nodes-bar">
+        <!-- Node 1: Master -->
+        <div class="glass-panel node-card" id="card-node-1">
+            <div class="node-card-header">
+                <span class="node-name mono">ESP32 #1 (MASTER)</span>
+                <span id="node-1-status" class="badge badge-online">GATEWAY</span>
+            </div>
+            <div class="node-stats mono">
+                <div class="stat-item"><span class="stat-label">CH</span><span class="stat-value">6</span></div>
+                <div class="stat-item"><span class="stat-label">STATIONS</span><span class="stat-value" id="node-1-rssi">3 AP</span></div>
+                <div class="stat-item"><span class="stat-label">RELAY</span><span class="stat-value" id="node-1-packets">0</span></div>
+            </div>
+        </div>
+
+        <!-- Node 2: Sensor A -->
+        <div class="glass-panel node-card" id="card-node-2">
+            <div class="node-card-header">
+                <span class="node-name mono">ESP32 #2 (SENSOR A)</span>
+                <span id="node-2-status" class="badge badge-online">ONLINE</span>
+            </div>
+            <div class="node-stats mono">
+                <div class="stat-item"><span class="stat-label">RSSI</span><span class="stat-value" id="node-2-rssi">-48 dBm</span></div>
+                <div class="stat-item"><span class="stat-label">DEV</span><span class="stat-value" id="node-2-dev">Δ 1.2 dB</span></div>
+                <div class="stat-item"><span class="stat-label">CSI</span><span class="stat-value" id="node-2-csi">AUTO</span></div>
+            </div>
+        </div>
+
+        <!-- Node 3: Sensor B -->
+        <div class="glass-panel node-card" id="card-node-3">
+            <div class="node-card-header">
+                <span class="node-name mono">ESP32 #3 (SENSOR B)</span>
+                <span id="node-3-status" class="badge badge-online">ONLINE</span>
+            </div>
+            <div class="node-stats mono">
+                <div class="stat-item"><span class="stat-label">RSSI</span><span class="stat-value" id="node-3-rssi">-45 dBm</span></div>
+                <div class="stat-item"><span class="stat-label">DEV</span><span class="stat-value" id="node-3-dev">Δ 0.8 dB</span></div>
+                <div class="stat-item"><span class="stat-label">CSI</span><span class="stat-value" id="node-3-csi">AUTO</span></div>
+            </div>
+        </div>
+
+        <!-- Node 4: Sensor C -->
+        <div class="glass-panel node-card" id="card-node-4">
+            <div class="node-card-header">
+                <span class="node-name mono">ESP32 #4 (SENSOR C)</span>
+                <span id="node-4-status" class="badge badge-online">ONLINE</span>
+            </div>
+            <div class="node-stats mono">
+                <div class="stat-item"><span class="stat-label">RSSI</span><span class="stat-value" id="node-4-rssi">-51 dBm</span></div>
+                <div class="stat-item"><span class="stat-label">DEV</span><span class="stat-value" id="node-4-dev">Δ 2.1 dB</span></div>
+                <div class="stat-item"><span class="stat-label">CSI</span><span class="stat-value" id="node-4-csi">AUTO</span></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Workspace (3D Room + Right HUD) -->
+    <main class="main-viewport">
+        <!-- Three.js Canvas Container -->
+        <div class="viewport-3d">
+            <div id="threejs-container"></div>
+
+            <!-- Overlays -->
+            <div class="room-overlay">
+                <div class="room-tag mono">
+                    VIRTUAL ROOM (10m &times; 10m &times; 3m) &bull; REAL-TIME ESTIMATE
+                </div>
+            </div>
+
+            <!-- Camera & View Controls -->
+            <div class="view-controls">
+                <button id="btn-reset-cam" class="btn-icon mono">RESET CAMERA</button>
+                <button id="btn-toggle-demo" class="btn-icon mono" style="color: var(--accent-amber);">TOGGLE SIMULATION</button>
+                <button id="btn-calibrate" class="btn-icon mono" style="color: var(--accent-cyan);">RE-CALIBRATE</button>
+            </div>
+        </div>
+
+        <!-- Right Floating Person Tracking HUD -->
+        <aside class="glass-panel hud-panel">
+            <div class="hud-title mono">
+                <span>PERSON TRACKING</span>
+                <span style="font-size: 0.7rem; color: var(--text-dim);">ESTIMATE</span>
+            </div>
+
+            <div class="tracking-metrics mono">
+                <div class="metric-box">
+                    <div class="metric-title">ESTIMATED X</div>
+                    <div class="metric-val" id="metric-pos-x">5.00 m</div>
+                </div>
+                <div class="metric-box">
+                    <div class="metric-title">ESTIMATED Y</div>
+                    <div class="metric-val" id="metric-pos-y">5.00 m</div>
+                </div>
+                <div class="metric-box">
+                    <div class="metric-title">VELOCITY</div>
+                    <div class="metric-val" id="metric-velocity">0.00 m/s</div>
+                </div>
+                <div class="metric-box">
+                    <div class="metric-title">DIRECTION</div>
+                    <div class="metric-val" id="metric-direction">0°</div>
+                </div>
+            </div>
+
+            <div class="metric-box mono" style="margin-top: 0.25rem;">
+                <div class="metric-title">MOVEMENT STATE</div>
+                <div class="metric-val" id="metric-movement" style="color: var(--accent-emerald);">STABLE</div>
+            </div>
+
+            <div class="confidence-bar-container mono">
+                <div style="display: flex; justify-content: space-between; font-size: 0.72rem; color: var(--text-muted);">
+                    <span>LOCALIZATION CONFIDENCE</span>
+                    <span id="metric-confidence-val" style="color: var(--accent-cyan);">85%</span>
+                </div>
+                <div class="progress-track">
+                    <div class="progress-fill" id="metric-confidence-fill"></div>
+                </div>
+            </div>
+
+            <div style="font-size: 0.68rem; color: var(--text-dim); line-height: 1.4; border-top: 1px solid var(--border-color); padding-top: 0.5rem;">
+                * Notice: 3D avatar represents estimated kinematic location and movement state derived from RF path disturbance. Not an anatomical skeleton scan.
+            </div>
+        </aside>
+    </main>
+
+    <!-- Bottom Signal Telemetry Charts Drawer -->
+    <footer class="bottom-drawer">
+        <div class="chart-card">
+            <div class="chart-header mono">
+                <span>MULTI-NODE RSSI STRENGTH (dBm)</span>
+                <span style="color: var(--text-dim);">NODE 1: Cyan | NODE 2: Green | NODE 3: Purple | NODE 4: Amber</span>
+            </div>
+            <canvas id="rssi-chart-canvas" class="chart-canvas"></canvas>
+        </div>
+
+        <div class="chart-card">
+            <div class="chart-header mono">
+                <span>AGGREGATE RF MOTION SCORE (0.0 - 1.0)</span>
+                <span style="color: var(--accent-amber);">-- MOVEMENT THRESHOLD (0.6)</span>
+            </div>
+            <canvas id="motion-chart-canvas" class="chart-canvas"></canvas>
+        </div>
+
+        <div class="controls-card mono">
+            <div style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase;">BACKEND STATUS</div>
+            <div style="font-size: 0.85rem; color: var(--accent-emerald); font-weight: 700;">WEBSOCKET ACTIVE</div>
+            <div style="font-size: 0.68rem; color: var(--text-dim);">PORT: 8000 &bull; UDP: 5005</div>
+            <a href="https://github.com/Udaykiranjammula-alpha/NEXUS-PRESENCE" target="_blank" class="btn btn-secondary" style="font-size: 0.72rem; padding: 0.4rem;">
+                GITHUB REPO
+            </a>
+        </div>
+    </footer>
+
+    <!-- Core Scripts -->
+    <script src="js/config.js"></script>
+    <script src="../visualization/threejs/camera.js"></script>
+    <script src="../visualization/threejs/lighting.js"></script>
+    <script src="../visualization/threejs/room.js"></script>
+    <script src="../visualization/threejs/nodes.js"></script>
+    <script src="../visualization/threejs/signal-rays.js"></script>
+    <script src="../visualization/threejs/human-avatar.js"></script>
+    <script src="../visualization/threejs/avatar-animation.js"></script>
+    <script src="../visualization/threejs/movement-controller.js"></script>
+    <script src="../visualization/threejs/scene.js"></script>
+
+    <script src="js/websocket.js"></script>
+    <script src="js/telemetry.js"></script>
+    <script src="js/charts.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

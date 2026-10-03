@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEXUS-PRESENCE | Ambient Wi-Fi Human Presence & 3D Visualization</title>
+    <link rel="stylesheet" href="css/main.css">
+    <style>
+        .hero-section {
+            min-height: 85vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 4rem 2rem;
+            background: radial-gradient(circle at 50% 30%, rgba(0, 240, 255, 0.08) 0%, transparent 70%);
+        }
+        .hero-badge {
+            margin-bottom: 1.5rem;
+        }
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.1;
+            letter-spacing: -0.03em;
+            margin-bottom: 1.25rem;
+            max-width: 900px;
+        }
+        .hero-title span {
+            background: linear-gradient(135deg, #00f0ff, #38bdf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .hero-desc {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            max-width: 680px;
+            margin-bottom: 2.5rem;
+        }
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 3.5rem;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            max-width: 1000px;
+            width: 100%;
+            margin: 0 auto;
+        }
+        .stat-card {
+            padding: 1.5rem;
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--accent-cyan);
+            margin-bottom: 0.25rem;
+        }
+        .stat-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .section-container {
+            max-width: 1100px;
+            margin: 4rem auto;
+            padding: 0 2rem;
+        }
+        .disclaimer-banner {
+            border-left: 4px solid var(--accent-cyan);
+            padding: 1.25rem;
+            background: rgba(0, 240, 255, 0.04);
+            margin-bottom: 3rem;
+            border-radius: 0 8px 8px 0;
+        }
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <header style="padding: 1.25rem 2rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color);">
+        <div style="font-weight: 800; font-size: 1.2rem; letter-spacing: 0.05em;">
+            NEXUS<span>-PRESENCE</span>
+        </div>
+        <div style="display: flex; gap: 1rem; align-items: center;">
+            <a href="https://github.com/Udaykiranjammula-alpha/NEXUS-PRESENCE" target="_blank" class="btn btn-secondary mono" style="font-size: 0.8rem;">GITHUB REPO</a>
+            <a href="dashboard.html" class="btn btn-primary" style="font-size: 0.8rem;">LAUNCH 3D MISSION CONTROL</a>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero-section">
+            <div class="hero-badge">
+                <span class="badge badge-online">
+                    <span class="pulse-dot"></span> LIVE SENSOR NETWORK &bull; v1.0.0
+                </span>
+            </div>
+            <h1 class="hero-title">
+                Multi-Node Ambient Wi-Fi Human Presence & <span>3D Visualization</span>
+            </h1>
+            <p class="hero-desc">
+                A distributed ESP32 wireless sensing platform estimating human presence, spatial movement, and transit kinematics from RF signal perturbations (RSSI & CSI) rendered in real-time within an interactive 3D virtual environment.
+            </p>
+            <div class="btn-group">
+                <a href="dashboard.html" class="btn btn-primary" style="padding: 0.85rem 1.75rem; font-size: 0.95rem;">
+                    LAUNCH 3D VIEW &rarr;
+                </a>
+                <a href="dashboard.html" class="btn btn-secondary" style="padding: 0.85rem 1.75rem; font-size: 0.95rem;">
+                    LIVE DASHBOARD
+                </a>
+                <a href="https://github.com/Udaykiranjammula-alpha/NEXUS-PRESENCE" target="_blank" class="btn btn-secondary">
+                    GITHUB
+                </a>
+            </div>
+
+            <!-- Core Statistics -->
+            <div class="stats-grid">
+                <div class="glass-panel stat-card">
+                    <div class="stat-number mono">4</div>
+                    <div class="stat-title">Sensor Nodes</div>
+                    <p style="font-size: 0.75rem; color: var(--text-dim); margin-top: 0.25rem;">ESP32 AP + 3 Distributed Stations</p>
+                </div>
+                <div class="glass-panel stat-card">
+                    <div class="stat-number mono">CSI / RSSI</div>
+                    <div class="stat-title">Dual-Mode Sensing</div>
+                    <p style="font-size: 0.75rem; color: var(--text-dim); margin-top: 0.25rem;">Subcarrier & Energy Perturbations</p>
+                </div>
+                <div class="glass-panel stat-card">
+                    <div class="stat-number mono">&lt; 50 ms</div>
+                    <div class="stat-title">Real-Time Telemetry</div>
+                    <p style="font-size: 0.75rem; color: var(--text-dim); margin-top: 0.25rem;">UDP Datagrams to WebSocket Stream</p>
+                </div>
+                <div class="glass-panel stat-card">
+                    <div class="stat-number mono">Three.js</div>
+                    <div class="stat-title">3D Visualization</div>
+                    <p style="font-size: 0.75rem; color: var(--text-dim); margin-top: 0.25rem;">Interpolated Humanoid Kinematics</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-container">
+            <div class="disclaimer-banner">
+                <div style="font-weight: 700; color: var(--accent-cyan); font-size: 0.85rem; text-transform: uppercase; margin-bottom: 0.35rem;">
+                    SCIENTIFIC & ETHICAL DISCLAIMER
+                </div>
+                <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.6;">
+                    This system estimates human presence and movement strictly through wireless radio-frequency signal variations. It does <strong>not</strong> provide optical camera imagery, through-wall X-ray vision, or direct anatomical skeleton reconstruction. The 3D humanoid avatar is a visualization of mathematical position and velocity estimates, not an optical reconstruction.
+                </p>
+            </div>
+
+            <div class="grid-2">
+                <div class="glass-panel" style="padding: 2rem;">
+                    <h3 style="margin-bottom: 1rem; color: var(--text-main);">Verified Hardware Prototypes</h3>
+                    <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.85rem; font-size: 0.85rem; color: var(--text-muted);">
+                        <li style="display: flex; gap: 0.5rem; align-items: flex-start;">
+                            <span style="color: var(--accent-emerald); font-weight: 700;">✓</span>
+                            <div><strong>ESP32 #1 Master Node</strong>: SoftAP gateway at <code>192.168.4.1</code> on SSID <code>NEXUS_PRESENCE</code>. Station counter and telemetry aggregator verified.</div>
+                        </li>
+                        <li style="display: flex; gap: 0.5rem; align-items: flex-start;">
+                            <span style="color: var(--accent-emerald); font-weight: 700;">✓</span>
+                            <div><strong>ESP32 #2 Sensor Station</strong>: High-speed RSSI sampling at 250ms with proven stability (-30 to -31 dBm).</div>
+                        </li>
+                        <li style="display: flex; gap: 0.5rem; align-items: flex-start;">
+                            <span style="color: var(--accent-emerald); font-weight: 700;">✓</span>
+                            <div><strong>RSSI v2 Baseline & Classifier</strong>: 10-second empty-room baseline calibration, rolling variance, and multi-state classification (STABLE / LOW ACTIVITY / MOVEMENT / HIGH ACTIVITY).</div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="glass-panel" style="padding: 2rem;">
+                    <h3 style="margin-bottom: 1rem; color: var(--text-main);">System Topology</h3>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 1rem;">
+                        Three ESP32 sensing stations (#2, #3, #4) continuously monitor wireless RF channels and transmit telemetry via UDP to Master Coordinator ESP32 #1, which relays packets to the FastAPI / Python localization backend and streams via WebSocket to the Three.js viewport.
+                    </p>
+                    <div style="display: flex; gap: 0.75rem;">
+                        <a href="dashboard.html" class="btn btn-primary" style="width: 100%;">OPEN LIVE 3D ROOM</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer style="text-align: center; padding: 3rem 2rem; border-top: 1px solid var(--border-color); color: var(--text-dim); font-size: 0.8rem;">
+        <p>NEXUS-PRESENCE &bull; Developed by <strong>Uday Kiran Jammula</strong> &bull; Released under MIT License</p>
+    </footer>
+</body>
+</html>
