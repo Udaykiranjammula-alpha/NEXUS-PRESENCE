@@ -4,13 +4,24 @@ Author: Uday Kiran Jammula
 """
 
 import sys
-import serial.tools.list_ports
+try:
+    import serial.tools.list_ports
+    HAS_PYSERIAL = True
+except ImportError:
+    HAS_PYSERIAL = False
+
 import argparse
 
 def scan_serial_ports():
     print("==================================================")
     print("   NEXUS-PRESENCE: ESP32 HARDWARE PROBE TOOL      ")
     print("==================================================")
+    if not HAS_PYSERIAL:
+        print("[!] Note: 'pyserial' is not installed. To scan COM ports automatically:")
+        print("    Run: pip install pyserial")
+        print("    Skipping live port enumeration...")
+        return []
+
     ports = list(serial.tools.list_ports.comports())
     if not ports:
         print("[!] No active COM / Serial ports detected.")
@@ -28,25 +39,25 @@ def analyze_hardware(chip_name: str = "ESP32-WROOM-32"):
     print(f"Target Chip: {chip_upper}")
 
     if "S3" in chip_upper:
-        print(" [✓] Promiscuous Mode: Supported")
-        print(" [✓] CSI Hardware: Full Support (High Fidelity Subcarriers)")
-        print(" [✓] Recommended Firmware Mode: CSI_RSSI")
-        print(" [✓] Recommended Framework: ESP-IDF v5.1+ / Arduino ESP32 v2.0.14+")
+        print(" [OK] Promiscuous Mode: Supported")
+        print(" [OK] CSI Hardware: Full Support (High Fidelity Subcarriers)")
+        print(" [OK] Recommended Firmware Mode: CSI_RSSI")
+        print(" [OK] Recommended Framework: ESP-IDF v5.1+ / Arduino ESP32 v2.0.14+")
     elif "C3" in chip_upper:
-        print(" [✓] Promiscuous Mode: Supported")
-        print(" [✓] CSI Hardware: Supported (Single-core RISC-V)")
-        print(" [✓] Recommended Firmware Mode: CSI_RSSI or RSSI_ONLY")
+        print(" [OK] Promiscuous Mode: Supported")
+        print(" [OK] CSI Hardware: Supported (Single-core RISC-V)")
+        print(" [OK] Recommended Firmware Mode: CSI_RSSI or RSSI_ONLY")
     elif "S2" in chip_upper:
-        print(" [✓] Promiscuous Mode: Supported")
-        print(" [~] CSI Hardware: Limited RAM (buffer tuning required)")
-        print(" [✓] Recommended Firmware Mode: RSSI_ONLY (fallback)")
+        print(" [OK] Promiscuous Mode: Supported")
+        print(" [~]  CSI Hardware: Limited RAM (buffer tuning required)")
+        print(" [OK] Recommended Firmware Mode: RSSI_ONLY (fallback)")
     elif "ESP32" in chip_upper or "WROOM" in chip_upper or "WROVER" in chip_upper:
-        print(" [✓] Promiscuous Mode: Full Support")
-        print(" [✓] CSI Hardware: Supported via ESP-IDF APIs")
-        print(" [✓] Status: Verified Working Prototype Platform")
-        print(" [✓] Recommended Firmware Mode: CSI_RSSI (with auto-fallback to RSSI_ONLY)")
+        print(" [OK] Promiscuous Mode: Full Support")
+        print(" [OK] CSI Hardware: Supported via ESP-IDF APIs")
+        print(" [OK] Status: Verified Working Prototype Platform")
+        print(" [OK] Recommended Firmware Mode: CSI_RSSI (with auto-fallback to RSSI_ONLY)")
     else:
-        print(" [!] Unknown hardware variant. Defaulting to RSSI_ONLY fallback mode.")
+        print(" [!]  Unknown hardware variant. Defaulting to RSSI_ONLY fallback mode.")
 
 def main():
     parser = argparse.ArgumentParser(description="Probe ESP32 hardware capability for NEXUS-PRESENCE")
